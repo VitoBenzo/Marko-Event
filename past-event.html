@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marko Event – Past Event</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="lang-switcher" aria-label="Language switcher">
+  <select id="language-select" aria-label="Site language">
+    <option value="de">DE</option>
+    <option value="ru">RU</option>
+  </select>
+</div>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+
+<nav>
+  <div class="nav-logo" aria-label="Marko Event Logo">Marko Event</div>
+  <div class="nav-links">
+    <a href="index.html#event" data-i18n="nav.event">Next Event</a>
+    <a href="index.html#past-events" data-i18n="nav.pastEvents">Past Events</a>
+    <a href="index.html#gallery" data-i18n="nav.gallery">Gallery</a>
+    <a href="index.html#contact" data-i18n="nav.contact">Kontakt</a>
+  </div>
+</nav>
+
+<section class="past-event-page" aria-label="Past Event">
+  <div class="section-label" data-i18n="pastEvents.label">History</div>
+  <div class="section-title" id="past-event-title">Past Event</div>
+  <a class="past-events-back" href="index.html#past-events" data-i18n="pastEvents.back">← Back to all events</a>
+  <div class="past-event-gallery" id="past-event-gallery"></div>
+</section>
+
+<script src="js/past-event.js"></script>
+</body>
+</html>

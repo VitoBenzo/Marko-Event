@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marko Event – Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --purple: #7c3aed;
+  --blue: #2563eb;
+  --deep: #080812;
+  --surface: #0f0f23;
+  --card: #15152e;
+  --border: rgba(255,255,255,0.08);
+  --text: #e2e8f0;
+  --muted: #64748b;
+  --green: #10b981;
+  --red: #ef4444;
+  --yellow: #f59e0b;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Outfit',sans-serif; background:var(--deep); color:var(--text); min-height:100vh; }
+
+/* LOGIN */
+#login-screen {
+  min-height:100vh; display:flex; align-items:center; justify-content:center;
+  background: radial-gradient(ellipse at 50% 0%, rgba(124,58,237,0.2), transparent 70%);
+}
+.login-box {
+  background:var(--card); border:1px solid var(--border); border-radius:24px;
+  padding:48px; width:100%; max-width:420px; text-align:center;
+}
+.login-logo { font-family:'Bebas Neue',sans-serif; font-size:2.5rem; letter-spacing:4px;
+  background:linear-gradient(135deg,#a78bfa,#60a5fa); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:8px; }
+.login-sub { color:var(--muted); font-size:0.85rem; letter-spacing:2px; text-transform:uppercase; margin-bottom:36px; }
+.login-input {
+  width:100%; padding:14px 18px; background:rgba(255,255,255,0.05); border:1px solid var(--border);
+  border-radius:12px; color:#fff; font-family:'Outfit',sans-serif; font-size:1rem; outline:none;
+  margin-bottom:16px; transition:border-color 0.3s;
+}
+.login-input:focus { border-color:rgba(124,58,237,0.6); }
+.login-btn {
+  width:100%; padding:14px; background:linear-gradient(135deg,var(--purple),var(--blue));
+  color:#fff; border:none; border-radius:12px; font-family:'Outfit',sans-serif;
+  font-size:1rem; font-weight:600; cursor:pointer; transition:opacity 0.3s;
+}
+.login-btn:hover { opacity:0.9; }
+.login-error { color:var(--red); font-size:0.85rem; margin-top:12px; display:none; }
+
+/* LAYOUT */
+#app { display:none; min-height:100vh; }
+.sidebar {
+  position:fixed; left:0; top:0; bottom:0; width:240px;
+  background:var(--surface); border-right:1px solid var(--border);
+  display:flex; flex-direction:column; z-index:100;
+}
+.sidebar-logo {
+  padding:28px 24px; font-family:'Bebas Neue',sans-serif; font-size:1.6rem; letter-spacing:3px;
+  background:linear-gradient(135deg,#a78bfa,#60a5fa); -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  border-bottom:1px solid var(--border);
+}
+.sidebar-logo span { display:block; font-family:'Outfit',sans-serif; font-size:0.65rem;
+  letter-spacing:2px; text-transform:uppercase; color:var(--muted); -webkit-text-fill-color:var(--muted); margin-top:2px; }
+.nav-items { padding:16px 12px; flex:1; display:flex; flex-direction:column; gap:4px; }
+.nav-item {
+  display:flex; align-items:center; gap:12px; padding:11px 14px; border-radius:10px;
+  color:var(--muted); font-size:0.9rem; font-weight:500; cursor:pointer; transition:all 0.2s; border:none;
+  background:none; text-align:left; width:100%;
+}
+.nav-item:hover { background:rgba(255,255,255,0.05); color:#fff; }
+.nav-item.active { background:rgba(124,58,237,0.2); color:#a78bfa; }
+.nav-item .icon { font-size:1.1rem; width:20px; text-align:center; }
+.badge {
+  margin-left:auto; background:var(--red); color:#fff; font-size:0.65rem;
+  font-weight:700; padding:2px 7px; border-radius:100px; min-width:20px; text-align:center;
+}
+.sidebar-footer { padding:16px; border-top:1px solid var(--border); }
+.logout-btn {
+  width:100%; padding:10px; background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.2);
+  color:var(--red); border-radius:10px; font-family:'Outfit',sans-serif; font-size:0.85rem;
+  cursor:pointer; transition:all 0.2s;
+}
+.logout-btn:hover { background:rgba(239,68,68,0.2); }
+
+.main { margin-left:240px; padding:40px; min-height:100vh; }
+
+/* TOPBAR */
+.topbar { display:flex; justify-content:space-between; align-items:center; margin-bottom:36px; }
+.page-title { font-family:'Bebas Neue',sans-serif; font-size:2.2rem; letter-spacing:2px; color:#fff; }
+.page-sub { color:var(--muted); font-size:0.85rem; margin-top:4px; }
+
+/* CARDS */
+.card {
+  background:var(--card); border:1px solid var(--border); border-radius:16px; padding:28px; margin-bottom:24px;
+}
+.card-title { font-size:0.75rem; letter-spacing:3px; text-transform:uppercase; color:#a78bfa; margin-bottom:20px; }
+
+/* FORM ELEMENTS */
+.field { margin-bottom:16px; }
+.field label { display:block; font-size:0.8rem; color:var(--muted); letter-spacing:1px; text-transform:uppercase; margin-bottom:8px; }
+.input, .textarea, .select {
+  width:100%; padding:12px 16px; background:rgba(255,255,255,0.05); border:1px solid var(--border);
+  border-radius:10px; color:#fff; font-family:'Outfit',sans-serif; font-size:0.95rem; outline:none; transition:border-color 0.3s;
+}
+.input:focus, .textarea:focus, .select:focus { border-color:rgba(124,58,237,0.6); }
+.textarea { resize:vertical; min-height:90px; }
+.select option { background:var(--card); }
+.row { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.row-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; }
+
+/* BUTTONS */
+.btn { padding:10px 22px; border-radius:10px; font-family:'Outfit',sans-serif; font-size:0.9rem; font-weight:600; cursor:pointer; border:none; transition:all 0.2s; }
+.btn-primary { background:linear-gradient(135deg,var(--purple),var(--blue)); color:#fff; }
+.btn-primary:hover { opacity:0.85; transform:translateY(-1px); }
+.btn-danger { background:rgba(239,68,68,0.15); color:var(--red); border:1px solid rgba(239,68,68,0.3); }
+.btn-danger:hover { background:rgba(239,68,68,0.25); }
+.btn-ghost { background:rgba(255,255,255,0.05); color:var(--muted); border:1px solid var(--border); }
+.btn-ghost:hover { background:rgba(255,255,255,0.1); color:#fff; }
+.btn-sm { padding:7px 14px; font-size:0.8rem; }
+.btn-success { background:rgba(16,185,129,0.15); color:var(--green); border:1px solid rgba(16,185,129,0.3); }
+
+/* TABLES / LISTS */
+.list { display:flex; flex-direction:column; gap:10px; }
+.list-item {
+  display:flex; align-items:center; gap:16px; padding:14px 18px;
+  background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:12px;
+}
+.list-item:hover { border-color:rgba(124,58,237,0.3); }
+.list-item-info { flex:1; }
+.list-item-title { font-weight:600; font-size:0.95rem; }
+.list-item-sub { font-size:0.8rem; color:var(--muted); margin-top:2px; }
+.list-actions { display:flex; gap:8px; }
+
+/* STAR RATING */
+.stars-input { display:flex; gap:4px; }
+.star-btn { background:none; border:none; font-size:1.4rem; cursor:pointer; color:rgba(255,255,255,0.2); transition:color 0.2s; }
+.star-btn.active { color:#fbbf24; }
+
+/* PHOTO GRID */
+.photo-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:12px; }
+.photo-item {
+  aspect-ratio:1; background:rgba(255,255,255,0.04); border:1px solid var(--border); border-radius:12px;
+  overflow:hidden; position:relative; display:flex; align-items:center; justify-content:center;
+}
+.photo-item img { width:100%; height:100%; object-fit:cover; }
+.photo-overlay {
+  position:absolute; inset:0; background:rgba(0,0,0,0.6); opacity:0; transition:opacity 0.2s;
+  display:flex; align-items:center; justify-content:center;
+}
+.photo-item:hover .photo-overlay { opacity:1; }
+.upload-zone {
+  aspect-ratio:1; background:rgba(124,58,237,0.08); border:2px dashed rgba(124,58,237,0.3);
+  border-radius:12px; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:8px; cursor:pointer; transition:all 0.2s; color:var(--muted);
+}
+.upload-zone:hover { border-color:#a78bfa; background:rgba(124,58,237,0.15); color:#a78bfa; }
+
+/* BOOKINGS */
+.booking-card {
+  padding:20px; background:rgba(255,255,255,0.03); border:1px solid var(--border);
+  border-radius:12px; margin-bottom:12px;
+}
+.booking-card.unread { border-color:rgba(124,58,237,0.4); background:rgba(124,58,237,0.05); }
+.booking-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px; }
+.booking-name { font-weight:600; font-size:1rem; }
+.booking-date { font-size:0.75rem; color:var(--muted); }
+.booking-meta { display:flex; gap:12px; margin-bottom:10px; flex-wrap:wrap; }
+.booking-tag { padding:3px 10px; background:rgba(124,58,237,0.15); border-radius:100px; font-size:0.75rem; color:#a78bfa; }
+.booking-email { font-size:0.8rem; color:var(--muted); }
+.booking-msg { font-size:0.9rem; color:var(--text); line-height:1.6; }
+.unread-dot { width:8px; height:8px; background:var(--purple); border-radius:50%; flex-shrink:0; margin-top:6px; }
+
+/* STATS */
+.stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:32px; }
+.stat-card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:22px; }
+.stat-value { font-family:'Bebas Neue',sans-serif; font-size:2.5rem; background:linear-gradient(135deg,#a78bfa,#60a5fa); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+.stat-label { font-size:0.75rem; color:var(--muted); letter-spacing:2px; text-transform:uppercase; margin-top:4px; }
+
+/* TOAST */
+.toast {
+  position:fixed; bottom:28px; right:28px; padding:14px 22px;
+  background:var(--green); color:#fff; border-radius:12px; font-weight:600; font-size:0.9rem;
+  transform:translateY(80px); opacity:0; transition:all 0.3s; z-index:999;
+}
+.toast.show { transform:translateY(0); opacity:1; }
+.toast.error { background:var(--red); }
+
+/* TABS */
+.tabs { display:none; }
+.tabs.active { display:block; }
+
+/* SECTION */
+.section-divider { height:1px; background:var(--border); margin:28px 0; }
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .sidebar {
+    position: static;
+    width: 100%;
+    height: auto;
+    flex-direction: column;
+  }
+  .sidebar-logo {
+    padding: 18px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-items {
+    padding: 10px 8px 12px;
+    flex-direction: row;
+    gap: 6px;
+    overflow-x: auto;
+  }
+  .nav-item {
+    font-size: 0.8rem;
+    padding: 8px 10px;
+    white-space: nowrap;
+  }
+  .sidebar-footer {
+    padding: 10px 12px;
+  }
+  .logout-btn {
+    font-size: 0.8rem;
+    padding: 8px;
+  }
+  .main {
+    margin-left: 0;
+    padding: 20px 16px 32px;
+  }
+  .topbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .stats-grid,
+  .row,
+  .row-3 {
+    grid-template-columns: 1fr;
+  }
+  .card {
+    padding: 20px 16px;
+  }
+}
+
+@media (max-width: 600px) {
+  .login-box {
+    padding: 32px 20px;
+    margin: 0 16px;
+  }
+  .page-title {
+    font-size: 1.7rem;
+  }
+  .stat-value {
+    font-size: 2rem;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">Marko Event</div>
+    <div class="login-sub">Admin Panel</div>
+    <input type="password" class="login-input" id="pwd-input" placeholder="Passwort eingeben..." onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()">Einloggen →</button>
+    <div class="login-error" id="login-error">Falsches Passwort</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-logo">Marko Event<span>Admin Panel</span></div>
+    <div class="nav-items">
+      <button class="nav-item active" onclick="showTab('dashboard')"><span class="icon">📊</span> Dashboard</button>
+      <button class="nav-item" onclick="showTab('event')"><span class="icon">📅</span> Next Event</button>
+      <button class="nav-item" onclick="showTab('mixes')"><span class="icon">🎵</span> Mixes</button>
+      <button class="nav-item" onclick="showTab('photos')"><span class="icon">📸</span> Galerie</button>
+      <button class="nav-item" onclick="showTab('past-events')"><span class="icon">🗂️</span> Vergangene Events</button>
+      <button class="nav-item" onclick="showTab('bookings')"><span class="icon">📬</span> Anfragen <span class="badge" id="unread-badge" style="display:none">0</span></button>
+    </div>
+    <div class="sidebar-footer">
+      <button class="logout-btn" onclick="logout()">Ausloggen</button>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div class="main">
+
+    <!-- DASHBOARD -->
+    <div id="tab-dashboard" class="tabs active">
+      <div class="topbar">
+        <div><div class="page-title">Dashboard</div><div class="page-sub">Willkommen zurück, Vitalij & Valera 👋</div></div>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-value" id="stat-mixes">0</div><div class="stat-label">Mixes</div></div>
+        <div class="stat-card"><div class="stat-value" id="stat-photos">0</div><div class="stat-label">Fotos</div></div>
+        <div class="stat-card"><div class="stat-value" id="stat-past-events">0</div><div class="stat-label">Vergangene Events</div></div>
+        <div class="stat-card"><div class="stat-value" id="stat-bookings">0</div><div class="stat-label">Neue Anfragen</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Schnellzugriff</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <button class="btn btn-primary" onclick="showTab('event')">📅 Event bearbeiten</button>
+          <button class="btn btn-ghost" onclick="showTab('mixes')">🎵 Mix hinzufügen</button>
+          <button class="btn btn-ghost" onclick="showTab('photos')">📸 Foto hochladen</button>
+          <button class="btn btn-ghost" onclick="showTab('bookings')">📬 Anfragen ansehen</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- NEXT EVENT -->
+    <div id="tab-event" class="tabs">
+      <div class="topbar">
+        <div><div class="page-title">Next Event</div><div class="page-sub">Bearbeite das nächste Auftritts-Datum</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Event Details</div>
+        <div class="row">
+          <div class="field"><label>Datum (z.B. 15 MAR)</label><input class="input" id="ev-date" placeholder="15 MAR"></div>
+          <div class="field"><label>Uhrzeit</label><input class="input" id="ev-time" placeholder="22:00 – 04:00 Uhr"></div>
+        </div>
+        <div class="field"><label>Name der Location</label><input class="input" id="ev-location" placeholder="Club Voltage, Berlin"></div>
+        <div class="field"><label>Adresse (für Google Maps)</label><input class="input" id="ev-address" placeholder="Musterstraße 1, 10115 Berlin"></div>
+        <div class="field"><label>Genre / Stil</label><input class="input" id="ev-genre" placeholder="House · Techno · Commercial"></div>
+        <div class="field"><label>Kurze Beschreibung</label><textarea class="textarea" id="ev-description" placeholder="Eine unvergessliche Nacht mit Vitalij & Valera..."></textarea></div>
+        <div class="field">
+          <label>Event Bild / GIF</label>
+          <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+            <input type="file" class="input" id="ev-image-file" accept="image/*,.gif" style="flex:1;">
+            <button class="btn btn-ghost" onclick="uploadEventImage()">📤 Hochladen</button>
+          </div>
+          <div id="ev-image-preview" style="margin-top:12px;display:none;">
+            <img id="ev-img" style="max-height:160px;border-radius:10px;border:1px solid var(--border);">
+            <div style="font-size:0.75rem;color:var(--green);margin-top:6px;">✓ Bild hochgeladen</div>
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="saveEvent()">Speichern ✓</button>
+      </div>
+    </div>
+
+    <!-- MIXES -->
+    <div id="tab-mixes" class="tabs">
+      <div class="topbar">
+        <div><div class="page-title">Mixes</div><div class="page-sub">Verwalte deine Musik-Mixes</div></div>
+        <button class="btn btn-primary" onclick="openAddMix()">+ Mix hinzufügen</button>
+      </div>
+      <div class="card" id="add-mix-form" style="display:none;">
+        <div class="card-title">Neuer Mix</div>
+        <div class="row">
+          <div class="field"><label>Titel</label><input class="input" id="mix-title" placeholder="Summer Vibes 2025"></div>
+          <div class="field"><label>Genre</label><input class="input" id="mix-genre" placeholder="House · Deep House"></div>
+        </div>
+        <div class="row">
+          <div class="field"><label>Dauer</label><input class="input" id="mix-duration" placeholder="1:12:34"></div>
+          <div class="field"><label>SoundCloud / URL (optional)</label><input class="input" id="mix-url" placeholder="https://soundcloud.com/..."></div>
+        </div>
+        <div style="display:flex;gap:10px;">
+          <button class="btn btn-primary" onclick="saveMix()">Hinzufügen</button>
+          <button class="btn btn-ghost" onclick="document.getElementById('add-mix-form').style.display='none'">Abbrechen</button>
+        </div>
+      </div>
+      <div class="list" id="mixes-list"></div>
+    </div>
+
+    <!-- PHOTOS -->
+    <div id="tab-photos" class="tabs">
+      <div class="topbar">
+        <div><div class="page-title">Galerie</div><div class="page-sub">Fotos hochladen und verwalten</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Foto hochladen</div>
+        <div class="row" style="align-items:end;">
+          <div class="field"><label>Foto auswählen</label><input type="file" class="input" id="photo-file" accept="image/*"></div>
+          <div class="field"><label>Beschriftung</label><input class="input" id="photo-caption" placeholder="Club Voltage · März 2026"></div>
+        </div>
+        <button class="btn btn-primary" onclick="uploadPhoto()">📤 Hochladen</button>
+      </div>
+      <div class="photo-grid" id="photos-grid"></div>
+    </div>
+
+    <!-- PAST EVENTS -->
+    <div id="tab-past-events" class="tabs">
+      <div class="topbar">
+        <div><div class="page-title">Vergangene Events</div><div class="page-sub">Event-Seiten für vergangene Veranstaltungen verwalten</div></div>
+        <button class="btn btn-primary" onclick="openPastEventForm()">+ Event hinzufügen</button>
+      </div>
+      <div class="card" id="add-past-event-form" style="display:none;">
+        <div class="card-title">Vergangenes Event</div>
+        <div class="row">
+          <div class="field"><label>Clubname</label><input class="input" id="past-club" placeholder="Dream Club"></div>
+          <div class="field"><label>Datum</label><input class="input" id="past-date" placeholder="27 FEB 2026"></div>
+        </div>
+        <div class="field">
+          <label>Titel für Seite (optional)</label>
+          <input class="input" id="past-title" placeholder="Dream Club · 27 FEB 2026">
+        </div>
+        <div class="field"><label>Beschreibung (optional)</label><textarea class="textarea" id="past-description" placeholder="Kurzer Hinweis zum Event..."></textarea></div>
+        <div style="display:flex;gap:10px;">
+          <button class="btn btn-primary" onclick="savePastEvent()">Speichern</button>
+          <button class="btn btn-ghost" onclick="closePastEventForm()">Abbrechen</button>
+        </div>
+      </div>
+      <div class="list" id="past-events-list"></div>
+    </div>
+
+    <!-- BOOKINGS -->
+    <div id="tab-bookings" class="tabs">
+      <div class="topbar">
+        <div><div class="page-title">Anfragen</div><div class="page-sub">Buchungsanfragen vom Kontaktformular</div></div>
+      </div>
+      <div id="bookings-list"></div>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = '';
+let TOKEN = sessionStorage.getItem('admin_token') || localStorage.getItem('admin_token') || '';
+let editingPastEventId = null;
+
+if (!sessionStorage.getItem('admin_token') && localStorage.getItem('admin_token')) {
+  sessionStorage.setItem('admin_token', localStorage.getItem('admin_token'));
+  localStorage.removeItem('admin_token');
+}
+
+// ── Auth ──────────────────────────────────────────────────────────────────
+async function doLogin() {
+  const pwd = document.getElementById('pwd-input').value;
+  const host = window.location.hostname;
+  const isLocal = host === 'localhost' || host === '127.0.0.1';
+  if (window.location.protocol !== 'https:' && !isLocal) {
+    document.getElementById('login-error').textContent = 'Login nur über HTTPS erlaubt';
+    document.getElementById('login-error').style.display = 'block';
+    return;
+  }
+  try {
+    const r = await fetch(`${API}/api/login`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({password: pwd})
+    });
+    if (!r.ok) throw new Error();
+    const d = await r.json();
+    TOKEN = d.token;
+    sessionStorage.setItem('admin_token', TOKEN);
+    localStorage.removeItem('admin_token');
+    showApp();
+  } catch {
+    document.getElementById('login-error').style.display = 'block';
+  }
+}
+
+function logout() {
+  TOKEN = '';
+  sessionStorage.removeItem('admin_token');
+  localStorage.removeItem('admin_token');
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────
+async function showApp() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  await loadAll();
+}
+
+async function loadAll() {
+  await Promise.all([loadEvent(), loadMixes(), loadPhotos(), loadPastEvents(), loadBookings()]);
+}
+
+if (TOKEN) showApp();
+
+// ── Tab ───────────────────────────────────────────────────────────────────
+function showTab(name) {
+  document.querySelectorAll('.tabs').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById(`tab-${name}`).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => {
+    if (n.getAttribute('onclick').includes(`'${name}'`)) n.classList.add('active');
+  });
+}
+
+// ── Toast ─────────────────────────────────────────────────────────────────
+function toast(msg, err=false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'toast show' + (err?' error':'');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ── Auth headers ──────────────────────────────────────────────────────────
+function authH() { return {Authorization:`Bearer ${TOKEN}`,'Content-Type':'application/json'}; }
+
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function safeUrl(value) {
+  try {
+    const url = new URL(String(value || ''), window.location.origin);
+    if (url.protocol === 'http:' || url.protocol === 'https:') return url.href;
+    return '';
+  } catch {
+    return '';
+  }
+}
+
+function encodePayload(value) {
+  return encodeURIComponent(JSON.stringify(value || {}));
+}
+
+function openPastEventFormByPayload(payload) {
+  try {
+    const item = JSON.parse(decodeURIComponent(payload));
+    openPastEventForm(item);
+  } catch {
+    openPastEventForm();
+  }
+}
+
+// ── Event ──────────────────────────────────────────────────────────────────
+async function loadEvent() {
+  const d = await (await fetch(`${API}/api/event`)).json();
+  document.getElementById('ev-date').value = d.date || '';
+  document.getElementById('ev-time').value = d.time || '';
+  document.getElementById('ev-location').value = d.location || '';
+  document.getElementById('ev-address').value = d.address || '';
+  document.getElementById('ev-genre').value = d.genre || '';
+  document.getElementById('ev-description').value = d.description || '';
+  if (d.image_url) {
+    document.getElementById('ev-img').src = d.image_url;
+    document.getElementById('ev-image-preview').style.display = 'block';
+  }
+}
+
+async function uploadEventImage() {
+  const file = document.getElementById('ev-image-file').files[0];
+  if (!file) return toast('Bitte ein Bild auswählen', true);
+  const fd = new FormData();
+  fd.append('file', file);
+  const r = await fetch(`${API}/api/event/image`, {method:'POST', headers:{Authorization:`Bearer ${TOKEN}`}, body:fd});
+  if (r.ok) {
+    const data = await r.json();
+    document.getElementById('ev-img').src = data.image_url;
+    document.getElementById('ev-image-preview').style.display = 'block';
+    toast('Bild hochgeladen ✓');
+  }
+}
+
+async function saveEvent() {
+  await fetch(`${API}/api/event`, {
+    method:'PUT', headers: authH(),
+    body: JSON.stringify({
+      date: document.getElementById('ev-date').value,
+      time: document.getElementById('ev-time').value,
+      location: document.getElementById('ev-location').value,
+      address: document.getElementById('ev-address').value,
+      genre: document.getElementById('ev-genre').value,
+      description: document.getElementById('ev-description').value,
+    })
+  });
+  toast('Event gespeichert ✓');
+}
+
+// ── Mixes ──────────────────────────────────────────────────────────────────
+async function loadMixes() {
+  const mixes = await (await fetch(`${API}/api/mixes`)).json();
+  document.getElementById('stat-mixes').textContent = mixes.length;
+  const list = document.getElementById('mixes-list');
+  list.innerHTML = mixes.map((m, i) => {
+    const mixId = encodeURIComponent(String(m.id || ''));
+    const title = escapeHtml(m.title || '');
+    const genre = escapeHtml(m.genre || '');
+    const duration = escapeHtml(m.duration || '');
+    return `
+    <div class="list-item">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:rgba(124,58,237,0.5);width:30px">${i + 1}</div>
+      <div class="list-item-info">
+        <div class="list-item-title">${title}</div>
+        <div class="list-item-sub">${genre} · ${duration}</div>
+      </div>
+      <div class="list-actions">
+        <button class="btn btn-danger btn-sm" onclick="deleteMix('${mixId}')">Löschen</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openAddMix() {
+  const f = document.getElementById('add-mix-form');
+  f.style.display = f.style.display === 'none' ? 'block' : 'none';
+}
+
+async function saveMix() {
+  const data = {
+    title: document.getElementById('mix-title').value,
+    genre: document.getElementById('mix-genre').value,
+    duration: document.getElementById('mix-duration').value,
+    url: document.getElementById('mix-url').value,
+  };
+  if (!data.title) return toast('Titel eingeben!', true);
+  await fetch(`${API}/api/mixes`, {method:'POST', headers:authH(), body:JSON.stringify(data)});
+  document.getElementById('add-mix-form').style.display = 'none';
+  ['mix-title','mix-genre','mix-duration','mix-url'].forEach(id => document.getElementById(id).value = '');
+  toast('Mix hinzugefügt ✓');
+  loadMixes();
+}
+
+async function deleteMix(id) {
+  if (!confirm('Mix löschen?')) return;
+  const safeId = encodeURIComponent(decodeURIComponent(String(id || '')));
+  await fetch(`${API}/api/mixes/${safeId}`, {method:'DELETE', headers:{Authorization:`Bearer ${TOKEN}`}});
+  toast('Mix gelöscht');
+  loadMixes();
+}
+
+// ── Photos ─────────────────────────────────────────────────────────────────
+async function loadPhotos() {
+  const photos = await (await fetch(`${API}/api/photos`)).json();
+  document.getElementById('stat-photos').textContent = photos.length;
+  const grid = document.getElementById('photos-grid');
+  grid.innerHTML = photos.map((p) => {
+    const photoId = encodeURIComponent(String(p.id || ''));
+    const imageUrl = safeUrl(p.url || '');
+    const caption = escapeHtml(p.caption || '');
+    if (!imageUrl) return '';
+    return `
+    <div class="photo-item">
+      <img src="${imageUrl}" alt="${caption}">
+      <div class="photo-overlay">
+        <button class="btn btn-danger btn-sm" onclick="deletePhoto('${photoId}')">✕ Löschen</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function uploadPhoto() {
+  const file = document.getElementById('photo-file').files[0];
+  if (!file) return toast('Bitte ein Foto auswählen', true);
+  const fd = new FormData();
+  fd.append('file', file);
+  fd.append('caption', document.getElementById('photo-caption').value);
+  await fetch(`${API}/api/photos`, {method:'POST', headers:{Authorization:`Bearer ${TOKEN}`}, body:fd});
+  document.getElementById('photo-file').value = '';
+  document.getElementById('photo-caption').value = '';
+  toast('Foto hochgeladen ✓');
+  loadPhotos();
+}
+
+async function deletePhoto(id) {
+  if (!confirm('Foto löschen?')) return;
+  const safeId = encodeURIComponent(decodeURIComponent(String(id || '')));
+  await fetch(`${API}/api/photos/${safeId}`, {method:'DELETE', headers:{Authorization:`Bearer ${TOKEN}`}});
+  toast('Foto gelöscht');
+  loadPhotos();
+}
+
+// ── Past events ───────────────────────────────────────────────────────────
+function openPastEventForm(item = null) {
+  const form = document.getElementById('add-past-event-form');
+  if (!form) return;
+
+  editingPastEventId = item && item.id ? item.id : null;
+  form.style.display = 'block';
+
+  document.getElementById('past-club').value = item?.club_name || '';
+  document.getElementById('past-date').value = item?.date || '';
+  document.getElementById('past-title').value = item?.title || '';
+  document.getElementById('past-description').value = item?.description || '';
+}
+
+function closePastEventForm() {
+  editingPastEventId = null;
+  const form = document.getElementById('add-past-event-form');
+  if (form) form.style.display = 'none';
+  ['past-club', 'past-date', 'past-title', 'past-description'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+}
+
+async function loadPastEvents() {
+  const r = await fetch(`${API}/api/past-events`);
+  if (!r.ok) {
+    document.getElementById('stat-past-events').textContent = '0';
+    document.getElementById('past-events-list').innerHTML = '<div class="list-item"><div class="list-item-info"><div class="list-item-title">API /api/past-events nicht verfügbar</div><div class="list-item-sub">Bitte Backend für vergangene Events aktivieren.</div></div></div>';
+    return;
+  }
+
+  const pastEvents = await r.json();
+  document.getElementById('stat-past-events').textContent = pastEvents.length;
+
+  const list = document.getElementById('past-events-list');
+  list.innerHTML = pastEvents.map((item) => {
+    const displayTitle = escapeHtml(item.title || `${item.club_name || ''} · ${item.date || ''}`.trim());
+    const displaySubtitle = escapeHtml(item.description || 'Seite wird automatisch mit Event-Fotos befüllt');
+    const eventId = encodeURIComponent(String(item.id || ''));
+    const payload = encodePayload({
+      id: item.id,
+      club_name: item.club_name || '',
+      date: item.date || '',
+      title: item.title || '',
+      description: item.description || ''
+    });
+    return `
+    <div class="list-item">
+      <div class="list-item-info">
+        <div class="list-item-title">${displayTitle}</div>
+        <div class="list-item-sub">${displaySubtitle}</div>
+      </div>
+      <div class="list-actions">
+        <button class="btn btn-ghost btn-sm" onclick="openPastEventFormByPayload('${payload}')">Bearbeiten</button>
+        <button class="btn btn-danger btn-sm" onclick="deletePastEvent('${eventId}')">Löschen</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function savePastEvent() {
+  const data = {
+    club_name: document.getElementById('past-club').value.trim(),
+    date: document.getElementById('past-date').value.trim(),
+    title: document.getElementById('past-title').value.trim(),
+    description: document.getElementById('past-description').value.trim(),
+  };
+
+  if (!data.club_name || !data.date) {
+    return toast('Bitte Clubname und Datum ausfüllen', true);
+  }
+
+  const url = editingPastEventId
+    ? `${API}/api/past-events/${editingPastEventId}`
+    : `${API}/api/past-events`;
+  const method = editingPastEventId ? 'PUT' : 'POST';
+  const isEdit = Boolean(editingPastEventId);
+
+  const r = await fetch(url, { method, headers: authH(), body: JSON.stringify(data) });
+  if (!r.ok) return toast('Speichern fehlgeschlagen', true);
+
+  closePastEventForm();
+  toast(isEdit ? 'Event aktualisiert ✓' : 'Event hinzugefügt ✓');
+  loadPastEvents();
+}
+
+async function deletePastEvent(id) {
+  if (!confirm('Vergangenes Event löschen?')) return;
+  const safeId = encodeURIComponent(decodeURIComponent(String(id || '')));
+  const r = await fetch(`${API}/api/past-events/${safeId}`, { method:'DELETE', headers:{Authorization:`Bearer ${TOKEN}`} });
+  if (!r.ok) return toast('Löschen fehlgeschlagen', true);
+  toast('Event gelöscht');
+  loadPastEvents();
+}
+
+// ── Bookings ───────────────────────────────────────────────────────────────
+async function loadBookings() {
+  const bookings = await (await fetch(`${API}/api/bookings`, {headers:{Authorization:`Bearer ${TOKEN}`}})).json();
+  const unread = bookings.filter(b => !b.read).length;
+  document.getElementById('stat-bookings').textContent = unread;
+  const badge = document.getElementById('unread-badge');
+  badge.textContent = unread;
+  badge.style.display = unread > 0 ? 'inline-block' : 'none';
+
+  const list = document.getElementById('bookings-list');
+  if (!bookings.length) {
+    list.innerHTML = '<div class="card" style="text-align:center;color:var(--muted);padding:60px">Noch keine Anfragen 📭</div>';
+    return;
+  }
+  list.innerHTML = bookings.map((b) => {
+    const bookingId = encodeURIComponent(String(b.id || ''));
+    const bookingName = escapeHtml(b.name || '');
+    const bookingEmail = escapeHtml(b.email || '');
+    const eventType = escapeHtml(b.event_type || '');
+    const message = b.message ? escapeHtml(b.message) : '';
+    const bookingDate = b.date ? new Date(b.date).toLocaleDateString('de-DE') : '';
+    return `
+    <div class="booking-card ${b.read?'':'unread'}">
+      <div class="booking-header">
+        <div style="display:flex;align-items:center;gap:10px;">
+          ${!b.read ? '<div class="unread-dot"></div>' : ''}
+          <div>
+            <div class="booking-name">${bookingName}</div>
+            <div class="booking-email">${bookingEmail}</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:flex-start;">
+          <div class="booking-date">${bookingDate}</div>
+          ${!b.read ? `<button class="btn btn-success btn-sm" onclick="markRead('${bookingId}')">Gelesen</button>` : ''}
+          <button class="btn btn-danger btn-sm" onclick="deleteBooking('${bookingId}')">✕</button>
+        </div>
+      </div>
+      <div class="booking-meta">
+        <span class="booking-tag">📋 ${eventType}</span>
+      </div>
+      ${message ? `<div class="booking-msg">${message}</div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+async function markRead(id) {
+  const safeId = encodeURIComponent(decodeURIComponent(String(id || '')));
+  await fetch(`${API}/api/bookings/${safeId}/read`, {method:'PATCH', headers:{Authorization:`Bearer ${TOKEN}`}});
+  loadBookings();
+}
+
+async function deleteBooking(id) {
+  if (!confirm('Anfrage löschen?')) return;
+  const safeId = encodeURIComponent(decodeURIComponent(String(id || '')));
+  await fetch(`${API}/api/bookings/${safeId}`, {method:'DELETE', headers:{Authorization:`Bearer ${TOKEN}`}});
+  toast('Anfrage gelöscht');
+  loadBookings();
+}
+</script>
+</body>
+</html>

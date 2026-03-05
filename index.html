@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marko Event – DJ Vitalij & Valera Schweigert</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- Переключатель языка сайта (справа сверху) -->
+<div class="lang-switcher" aria-label="Language switcher">
+  <select id="language-select" aria-label="Site language">
+    <option value="de">DE</option>
+    <option value="ru">RU</option>
+  </select>
+</div>
+
+<!-- Фоновые декоративные элементы (светящиеся орбы) -->
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+
+<!-- Верхняя навигация: логотип, ссылки по секциям, кнопка мобильного меню -->
+<nav>
+  <div class="nav-logo" aria-label="Marko Event Logo">Marko Event</div>
+  <div class="nav-links">
+    <a href="#event" data-i18n="nav.event">Next Event</a>
+    <a href="#past-events" data-i18n="nav.pastEvents">Past Events</a>
+    <a href="#gallery" data-i18n="nav.gallery">Gallery</a>
+    <a href="#contact" data-i18n="nav.contact">Kontakt</a>
+  </div>
+  <button class="mobile-menu-btn" aria-label="Menü öffnen">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- Мобильное меню: дублирует основные ссылки для маленьких экранов -->
+<div class="mobile-menu">
+  <a href="#event" data-i18n="nav.event">Next Event</a>
+  <a href="#past-events" data-i18n="nav.pastEvents">Past Events</a>
+  <a href="#gallery" data-i18n="nav.gallery">Gallery</a>
+  <a href="#contact" data-i18n="nav.contact">Kontakt</a>
+</div>
+
+<!-- Hero-блок: бренд, главный визуал и позиционирование проекта -->
+<section class="hero" aria-label="Hero Bereich">
+  <div class="logo-wrap">
+    <div class="neon-circle"></div>
+    <h1 class="logo-m">M</h1>
+  </div>
+
+  <div class="brand-text">
+    <h2 class="brand-name">MARKO</h2>
+    <h3 class="brand-sub">EVENT</h3>
+
+    <div class="tagline">
+      <p data-i18n="hero.tagline.1">Premium DJ & Event Experience</p>
+      <p data-i18n="hero.tagline.2">Exklusive Musik.</p>
+      <p data-i18n="hero.tagline.3">Perfekte Stimmung.</p>
+      <p data-i18n="hero.tagline.4">Unvergessliche Momente.</p>
+      <p data-i18n="hero.tagline.5">Professionelles DJ-Entertainment für Hochzeiten, Firmenfeiern und besondere Events.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Блок ближайшего события: афиша, дата, место, описание и CTA -->
+<section id="event" aria-label="Nächstes Event">
+  <div class="section-label" data-i18n="event.label">Upcoming</div>
+  <div class="section-title" data-i18n="event.title">Next Event</div>
+  <div class="next-event reveal">
+    <div class="event-image-area" id="event-image-area">
+      <div class="event-image-placeholder" data-i18n="event.visualPlaceholder">Event Visual</div>
+    </div>
+    <div class="event-details">
+      <div class="event-date-big" id="ev-date-display">27 FEBR</div>
+      <div id="ev-location-display">Dream Club</div>
+      <div id="event-description" class="event-description" data-i18n="event.description">Eine unvergessliche Nacht mit Vitalij & Valera Schweigert.</div>
+
+      <div class="event-detail-row"><span>🎤</span><div id="ev-loc-val">Dream Club</div></div>
+      <div class="event-detail-row"><span>📍</span><div id="ev-addr-val">Berlin</div></div>
+      <div class="event-detail-row"><span>🕙</span><div id="ev-time-val">22:00 – 04:00</div></div>
+      <div class="event-detail-row"><span>🎵</span><div id="ev-genre-val">PARTY NIGHT</div></div>
+
+      <div class="event-action">
+        <a href="#contact" class="btn-primary" data-i18n="event.ticketCta">Tickets anfragen</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Визуальный разделитель между секциями -->
+<div class="section-divider"></div>
+
+<!-- Блок прошедших мероприятий: список ссылок на страницы с фото -->
+<section id="past-events" aria-label="Vergangene Veranstaltungen">
+  <div class="section-label" data-i18n="pastEvents.label">History</div>
+  <div class="section-title" data-i18n="pastEvents.title">Past Events</div>
+  <div class="past-events-list"></div>
+</section>
+
+<!-- Визуальный разделитель между секциями -->
+<div class="section-divider"></div>
+
+<!-- Блок галереи: контейнер для фото/видео с мероприятий -->
+<section id="gallery" aria-label="Galerie">
+  <div class="section-label" data-i18n="gallery.label">Event Vibes</div>
+  <div class="section-title" data-i18n="gallery.title">Gallery</div>
+  <div class="gallery-grid"></div>
+</section>
+
+<!-- Визуальный разделитель между секциями -->
+<div class="section-divider"></div>
+
+<!-- Расширенный контактный блок: соцсети + форма заявки на бронирование -->
+<section id="contact" aria-label="Kontakt">
+  <div class="contact-wrapper">
+    <div class="section-label" data-i18n="contact.bookLabel">Bucht uns</div>
+    <div class="section-title" data-i18n="contact.bookTitle">Kontakt</div>
+    <p class="contact-desc" data-i18n="contact.desc">Ihr wollt uns für euer Event buchen? Schreibt uns einfach – wir melden uns innerhalb von 24 Stunden.</p>
+    <div class="social-links">
+      <a href="https://www.instagram.com/marko_event.de/" target="_blank" rel="noopener noreferrer" class="social-btn instagram" aria-label="Instagram Profil von Marko Event">
+        <span></span>
+        <span>@marko_event.de</span>
+      </a>
+      <a href="https://t.me/MarkoFamilie" target="_blank" rel="noopener noreferrer" class="social-btn telegram" aria-label="Telegram Kanal MarkoFamilie">
+        <span></span>
+        <span>@MarkoFamilie</span>
+      </a>
+      <a href="https://www.tiktok.com/@marko_events?is_from_webapp=1&amp;sender_device=pc" target="_blank" rel="noopener noreferrer" class="social-btn tiktok" aria-label="TikTok Profil von Marko Event">
+        <span></span>
+        <span>@marko_events</span>
+      </a>
+    </div>
+    <form class="contact-form" onsubmit="handleSubmit(event)">
+      <div class="form-row">
+        <input type="text" class="form-input" id="f-name" placeholder="Ihr Name" data-i18n-placeholder="contact.placeholder.name" required>
+        <input type="email" class="form-input" id="f-email" placeholder="E-Mail" data-i18n-placeholder="contact.placeholder.email" required>
+      </div>
+      <input type="text" class="form-input" id="f-type" placeholder="Art des Events (Hochzeit, Geburtstag, Club...)" data-i18n-placeholder="contact.placeholder.type" required>
+      <textarea class="form-textarea" id="f-msg" placeholder="Beschreiben Sie Ihr Event – Datum, Ort, Gästeanzahl..." data-i18n-placeholder="contact.placeholder.message"></textarea>
+      <button type="submit" class="btn-primary" data-i18n="contact.submit">Anfrage senden ✦</button>
+    </form>
+  </div>
+</section>
+
+<!-- Визуальный разделитель между секциями -->
+<div class="section-divider"></div>
+
+
+<!-- Футер: копирайт и быстрые ссылки на legal-модалки -->
+<footer>
+  <div id="footer-copy" data-i18n="footer.copy">© <span id="year">2026</span> Marko Event</div>
+  <div class="footer-links">
+    <a href="javascript:void(0)" onclick="openModal('impressum')" data-i18n="legal.impressum">Impressum</a>
+    <a href="javascript:void(0)" onclick="openModal('datenschutz')" data-i18n="legal.datenschutz">Datenschutz</a>
+    <a href="javascript:void(0)" onclick="openModal('agb')" data-i18n="legal.agb">AGB</a>
+  </div>
+</footer>
+
+<!-- Модальное окно: Impressum -->
+<div class="modal-overlay" id="modal-impressum" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="impressum-title">
+    <button class="modal-close" onclick="closeModal('impressum')" aria-label="Impressum schließen" data-i18n-aria-label="modal.close.impressum">✕</button>
+    <h2 id="impressum-title" data-i18n="modal.impressum.title">Impressum</h2>
+    <h3 data-i18n="modal.impressum.s1.title">Angaben gemäß § 5 TMG</h3>
+    <p data-i18n-html="modal.impressum.s1.text">Vitalij Schweigert &amp; Valera Schweigert<br>Marko Event<br>[Ihre Straße und Hausnummer]<br>[PLZ] [Stadt], Deutschland</p>
+    <h3 data-i18n="modal.impressum.s2.title">Kontakt</h3>
+    <p data-i18n-html="modal.impressum.s2.text">Instagram: <a href="https://www.instagram.com/marko_event.de/" target="_blank" rel="noopener noreferrer">@marko_event.de</a><br>
+    Telegram: <a href="https://t.me/MarkoFamilie" target="_blank" rel="noopener noreferrer">@MarkoFamilie</a><br>
+    E-Mail: [Ihre E-Mail-Adresse]</p>
+    <h3 data-i18n="modal.impressum.s3.title">Umsatzsteuer</h3>
+    <p data-i18n="modal.impressum.s3.text">Kleinunternehmer gemäß § 19 UStG – es wird keine Umsatzsteuer ausgewiesen.</p>
+    <h3 data-i18n="modal.impressum.s4.title">Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV</h3>
+    <p data-i18n="modal.impressum.s4.text">Vitalij Schweigert, [Adresse wie oben]</p>
+    <h3 data-i18n="modal.impressum.s5.title">Streitschlichtung</h3>
+    <p data-i18n-html="modal.impressum.s5.text">Die EU-Kommission stellt eine Plattform zur Online-Streitbeilegung bereit: <a href="https://ec.europa.eu/consumers/odr/" target="_blank" rel="noopener noreferrer">ec.europa.eu/consumers/odr</a>. Wir nehmen nicht an Streitbeilegungsverfahren teil.</p>
+  </div>
+</div>
+
+<!-- Модальное окно: Datenschutz -->
+<div class="modal-overlay" id="modal-datenschutz" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="datenschutz-title">
+    <button class="modal-close" onclick="closeModal('datenschutz')" aria-label="Datenschutzhinweise schließen" data-i18n-aria-label="modal.close.datenschutz">✕</button>
+    <h2 id="datenschutz-title" data-i18n="modal.datenschutz.title">Datenschutz</h2>
+    <h3 data-i18n="modal.datenschutz.s1.title">1. Verantwortlicher</h3>
+    <p data-i18n="modal.datenschutz.s1.text">Vitalij Schweigert &amp; Valera Schweigert, Marko Event, [Adresse], Deutschland.</p>
+    <h3 data-i18n="modal.datenschutz.s2.title">2. Erhobene Daten</h3>
+    <p data-i18n="modal.datenschutz.s2.text">Beim Kontaktformular erheben wir: Name, E-Mail, Art des Events und Ihre Nachricht. Diese Daten nutzen wir ausschließlich zur Bearbeitung Ihrer Anfrage.</p>
+    <h3 data-i18n="modal.datenschutz.s3.title">3. Rechtsgrundlage</h3>
+    <p data-i18n="modal.datenschutz.s3.text">Art. 6 Abs. 1 lit. b DSGVO (Vertragsanbahnung) sowie Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse).</p>
+    <h3 data-i18n="modal.datenschutz.s4.title">4. Speicherdauer</h3>
+    <p data-i18n="modal.datenschutz.s4.text">Ihre Daten werden nach abschließender Bearbeitung der Anfrage gelöscht, sofern keine gesetzlichen Aufbewahrungspflichten bestehen.</p>
+    <h3 data-i18n="modal.datenschutz.s5.title">5. Ihre Rechte</h3>
+    <p data-i18n="modal.datenschutz.s5.text">Sie haben das Recht auf Auskunft, Berichtigung, Löschung und Einschränkung der Verarbeitung. Kontakt per E-Mail genügt.</p>
+    <h3 data-i18n="modal.datenschutz.s6.title">6. Hosting</h3>
+    <p data-i18n-html="modal.datenschutz.s6.text">Diese Website wird bei IONOS SE, Elgendorfer Str. 57, 56410 Montabaur gehostet. Datenschutzerklärung: <a href="https://www.ionos.de/terms-gtc/datenschutzerklaerung/" target="_blank" rel="noopener noreferrer">ionos.de/datenschutz</a></p>
+    <h3 data-i18n="modal.datenschutz.s7.title">7. Google Fonts</h3>
+    <p data-i18n-html="modal.datenschutz.s7.text">Diese Seite lädt Schriftarten von Google LLC (USA). Dabei wird eine Verbindung zu Google-Servern hergestellt. Mehr: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">policies.google.com/privacy</a></p>
+  </div>
+</div>
+
+<!-- Модальное окно: AGB -->
+<div class="modal-overlay" id="modal-agb" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="agb-title">
+    <button class="modal-close" onclick="closeModal('agb')" aria-label="AGB schließen" data-i18n-aria-label="modal.close.agb">✕</button>
+    <h2 id="agb-title" data-i18n="modal.agb.title">AGB</h2>
+    <h3 data-i18n="modal.agb.s1.title">§ 1 Geltungsbereich</h3>
+    <p data-i18n="modal.agb.s1.text">Diese AGB gelten für alle Verträge zwischen Marko Event (Vitalij &amp; Valera Schweigert) und dem Auftraggeber bezüglich DJ-Dienstleistungen.</p>
+    <h3 data-i18n="modal.agb.s2.title">§ 2 Vertragsschluss</h3>
+    <p data-i18n="modal.agb.s2.text">Ein Vertrag kommt zustande durch schriftliche Buchungsbestätigung per E-Mail oder Nachricht.</p>
+    <h3 data-i18n="modal.agb.s3.title">§ 3 Vergütung &amp; Zahlung</h3>
+    <p data-i18n="modal.agb.s3.text">Die Vergütung ist spätestens 7 Tage vor dem Event zu entrichten. Bei Buchungen unter 7 Tagen ist die Zahlung sofort fällig.</p>
+    <h3 data-i18n="modal.agb.s4.title">§ 4 Stornierung durch den Auftraggeber</h3>
+    <p data-i18n-html="modal.agb.s4.text">Mehr als 30 Tage vorher: 30% Ausfallhonorar.<br>14–30 Tage vorher: 50% Ausfallhonorar.<br>Weniger als 14 Tage vorher: 100% Ausfallhonorar.</p>
+    <h3 data-i18n="modal.agb.s5.title">§ 5 Stornierung durch Marko Event</h3>
+    <p data-i18n="modal.agb.s5.text">Bei Krankheit oder höherer Gewalt wird umgehend informiert und entweder ein Ersatz-DJ organisiert oder die Zahlung vollständig erstattet.</p>
+    <h3 data-i18n="modal.agb.s6.title">§ 6 Pflichten des Auftraggebers</h3>
+    <p data-i18n="modal.agb.s6.text">Der Auftraggeber stellt Stromversorgung (mind. 2x 230V/16A), ausreichend Aufbaufläche und einen sicheren Aufstellort bereit. Fahrtkosten ab 50 km werden gesondert berechnet.</p>
+    <h3 data-i18n="modal.agb.s7.title">§ 7 GEMA</h3>
+    <p data-i18n="modal.agb.s7.text">Die Anmeldung und Zahlung der GEMA-Gebühren für öffentliche Veranstaltungen obliegt dem Veranstalter.</p>
+    <h3 data-i18n="modal.agb.s8.title">§ 8 Schlussbestimmungen</h3>
+    <p data-i18n="modal.agb.s8.text">Es gilt deutsches Recht. Gerichtsstand ist der Wohnsitz von Vitalij Schweigert.</p>
+    <p style="margin-top:20px; font-size:0.8rem; color:#64748b;" data-i18n="modal.agb.updated">Stand: Februar 2026</p>
+  </div>
+</div>
+
+<!-- Основной JS: динамика контента, меню, формы и модальные окна -->
+<script src="js/script.js"></script>
+</body>
+</html>
